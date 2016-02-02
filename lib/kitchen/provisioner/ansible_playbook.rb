@@ -461,7 +461,11 @@ module Kitchen
       end
 
       def role_name
-        File.basename(roles) == 'roles' ? '' : File.basename(roles)
+        role = File.basename(roles)
+        role = '' if role == 'roles'
+        role = role.gsub(/^(ansible[-_.+]*)*(role[-_.+]*)*/, '')
+        role = role.gsub(/\./, '_')
+        role
       end
 
       def modules

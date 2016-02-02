@@ -5,21 +5,17 @@ driver:
 provisioner:
   name: ansible_playbook
   ansible_verbose: true
-  ansible_verbosity: 3
+  ansible_verbosity: 4
   hosts: all
 
-verifier:
-  ruby_bindir: '/usr/bin'
-
 platforms:
+  - name: centos-7.1
+    driver_config:
+      box: bento/centos-7.1
   - name: trusty64
     driver_config:
       box: ubuntu/trusty64
       box_url: https://atlas.hashicorp.com/ubuntu/trusty64
-  - name: centos-6.6
-    driver_config:
-      box: chef/centos-6.6
-      box_url: https://atlas.hashicorp.com/chef/boxes/centos-6.6
   - name: debian-jessie
     driver_config:
       box: debian/jessie64
@@ -27,8 +23,11 @@ platforms:
 
 suites:
   - name: default
+    provisioner:
+      roles_path: './test/integration/default/cucumber/fixtures/roles/ansible-role-myrole'
+      playbook: './test/integration/default/cucumber/fixtures/playbooks/uploading-roles-test-playbook.yml'
   - name: from_source
     provisioner:
       require_ansible_repo: false
       require_ansible_source: true
-      playbook: test/integration/default/default.yml
+      playbook: './test/integration/from_source/default.yml'
