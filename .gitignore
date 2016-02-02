@@ -9,5 +9,5 @@ vendor
 .ruby-version
 
 # Test-kitchen
-integration_test/.kitchen/
+.kitchen/
 
