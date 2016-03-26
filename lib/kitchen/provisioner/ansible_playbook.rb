@@ -261,7 +261,7 @@ module Kitchen
           commands << [
             'ansible-galaxy', 'install', '--force',
             '-p', File.join(config[:root_path], 'roles'),
-            '-r', File.join(config[:root_path], galaxy_requirements)
+            '-r', File.join(config[:root_path], File.basename(config[:requirements_path]))
           ].join(' ')
         end
 
@@ -334,6 +334,10 @@ module Kitchen
        # this is not working so just return nil for now
        # File.exist?('ansible.cfg') ? "cd #{config[:root_path]};" : nil
        nil
+      end
+
+      def tmp_requirements_path
+        File.join(sandbox_path, File.basename(galaxy_requirements))
       end
 
       protected
@@ -673,7 +677,8 @@ module Kitchen
         resolve_with_librarian if File.exist?(ansiblefile)
 
         if galaxy_requirements
-          FileUtils.cp(galaxy_requirements, File.join(sandbox_path, galaxy_requirements))
+          debug("Copying requirements file from #{galaxy_requirements} to #{tmp_requirements_path}")
+          FileUtils.cp_r(galaxy_requirements, tmp_requirements_path)
         end
 
         # Detect whether we are running tests on a role
