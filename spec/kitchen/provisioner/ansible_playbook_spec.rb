@@ -61,6 +61,20 @@ describe Kitchen::Provisioner::AnsiblePlaybook do
     Kitchen::Provisioner::AnsiblePlaybook.new(config).finalize_config!(instance)
   end
 
+  describe 'default behaviour' do
+    it 'should raise an exception for trying to access a sandbox that does not exist' do
+      expect { provisioner.sandbox_path }.to raise_error(Kitchen::ClientError)
+    end
+  end
+
+  context 'sandbox context' do
+    it 'returns the temporary path to the requirements file when set' do
+      allow(provisioner).to receive(:sandbox_path).and_return('/some/path/to')
+      allow(provisioner).to receive(:galaxy_requirements).and_return('requirements.txt')
+      expect(provisioner.tmp_requirements_path).to eq('/some/path/to/requirements.txt')
+    end
+  end
+
   describe '#run_command' do
     it 'should give a sane run_command' do
       expect(provisioner.run_command).to match(/ansible-playbook.*--skip-tags=skipme.*/)
