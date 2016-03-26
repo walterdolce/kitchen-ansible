@@ -61,6 +61,12 @@ describe Kitchen::Provisioner::AnsiblePlaybook do
     Kitchen::Provisioner::AnsiblePlaybook.new(config).finalize_config!(instance)
   end
 
+  describe 'default behaviour' do
+    it 'should raise an exception for trying to access a sandbox that does not exist' do
+      expect { provisioner.sandbox_path }.to raise_error(Kitchen::ClientError)
+    end
+  end
+
   describe '#run_command' do
     it 'should give a sane run_command' do
       expect(provisioner.run_command).to match(/ansible-playbook.*--skip-tags=skipme.*/)
